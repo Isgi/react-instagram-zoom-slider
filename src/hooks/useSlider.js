@@ -5,7 +5,7 @@ import { clamp } from '../helpers'
 
 export default function useSlider({ initialSlide, slides }) {
   const [{ x, scale }, set] = useSpring(() => ({
-    x: typeof window !== 'undefined' ? -window.innerWidth * initialSlide : 0,
+    x: typeof window !== 'undefined' ? (window.innerWidth > 600 ? -600 : -window.innerWidth) * initialSlide : 0,
     scale: 1,
     config: { tension: 270, clamp: true },
   }))
@@ -44,13 +44,13 @@ export default function useSlider({ initialSlide, slides }) {
       }
 
       // We have swiped past halfway
-      if (!down && distance > window.innerWidth / 2) {
+      if (!down && distance > (window.innerWidth > 600 ? 600 : window.innerWidth) / 2) {
         // Move to the next slide
         const slideDir = xDir > 0 ? -1 : 1
         index.current = clamp(index.current + slideDir, 0, slides.length - 1)
 
         set({
-          x: -index.current * window.innerWidth + (down ? xMovement : 0),
+          x: -index.current * (window.innerWidth > 600 ? 600 : window.innerWidth) + (down ? xMovement : 0),
           immediate: false,
         })
       } else if (swipeX !== 0) {
@@ -60,7 +60,7 @@ export default function useSlider({ initialSlide, slides }) {
 
       // Animate the transition
       set({
-        x: -index.current * window.innerWidth + (down ? xMovement : 0),
+        x: -index.current * (window.innerWidth > 600 ? 600 : window.innerWidth) + (down ? xMovement : 0),
         immediate: down,
       })
 
